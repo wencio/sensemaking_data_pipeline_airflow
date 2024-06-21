@@ -1,4 +1,4 @@
-Here's a README that highlights the use of Airflow for ETL and the integration of D3.js, JavaScript, and Python for visualization:
+
 
 # Project: ETL and Data Visualization with Airflow, D3.js, JavaScript, and Python
 
