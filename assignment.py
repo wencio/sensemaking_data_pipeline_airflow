@@ -3,8 +3,7 @@ from datetime import timedelta  # Import timedelta for defining time intervals
 from airflow.operators.bash import BashOperator  # Import BashOperator for running bash commands
 from airflow.utils.dates import days_ago  # Import days_ago for setting start dates
 from airflow.operators.python import PythonOperator  # Import PythonOperator for running Python functions
-import urllib.request  # Import the urllib.request library for making HTTP requests
-import glob, os  # Import glob and os libraries for file handling
+import glob  # Import glob for file handling
 import json  # Import the JSON library for working with JSON data
 import requests  # Import the requests library for making HTTP requests
 import time  # Import the time library for adding delays
@@ -56,6 +55,9 @@ def catalog():
         # Wait for 15 seconds before processing the next URL
         time.sleep(15)
 
+# Function: Catalog
+# This function reads a list of URLs from a file, fetches the HTML content of each URL, and saves it to individual files in the specified directory.
+
 def combine():
     # Open the output file in write mode
     output_path = '/opt/airflow/dags/combo.txt'
@@ -70,6 +72,9 @@ def combine():
                 outfile.write('\n')  # Adding a newline between file contents for clarity
 
     print('Combined all .html files into combo.txt')
+
+# Function: Combine
+# This function reads all .html files in the specified directory, combines their content into a single file, and saves it as combo.txt.
 
 def titles():
     # Define the store_json helper function
@@ -91,7 +96,7 @@ def titles():
     html = html.replace('\n', ' ').replace('\r', '')
 
     # Create a BeautifulSoup object to parse the HTML content
-    from bs4 import BeautifulSoup  # Import BeautifulSoup from the bs4 library for web scraping
+    from bs4 import BeautifulSoup
     soup = BeautifulSoup(html, "html.parser")
 
     # Find all h3 elements in the HTML content
@@ -102,6 +107,9 @@ def titles():
 
     # Store the results in a JSON file
     store_json(titles, 'titles.json')
+
+# Function: Titles
+# This function reads the combined HTML file, extracts the text from all <h3> elements, and saves the extracted titles into a JSON file.
 
 def clean():
     # Define the store_json helper function
@@ -140,6 +148,9 @@ def clean():
         # Store the cleaned titles in a new JSON file
         store_json(titles, 'titles_clean.json')
 
+# Function: Clean
+# This function reads the titles from the JSON file, removes punctuation and numbers, filters out one-character words, and saves the cleaned titles into a new JSON file.
+
 def count_words():
     # Define the store_json helper function
     def store_json(data, file):
@@ -162,6 +173,9 @@ def count_words():
 
         # Store the word counts in a JSON file
         store_json(counts, 'words.json')
+
+# Function: Count Words
+# This function reads the cleaned titles from the JSON file, counts the frequency of each word, and saves the word counts into a new JSON file.
 
 # Define the DAG and tasks
 with DAG(
@@ -187,24 +201,26 @@ with DAG(
         task_id='task_two',  # Define the task ID
         depends_on_past=False,  # Do not depend on past runs
         python_callable=combine  # Call the combine function
-    )
+
+         )
 
     t3 = PythonOperator(
-        task_id='task_three',  # Define the task ID
-        depends_on_past=False,  # Do not depend on past runs
-        python_callable=titles  # Call the titles function
+        task_id='task_three',
+        depends_on_past=False,
+        python_callable=titles # Call the title function
     )
 
     t4 = PythonOperator(
-        task_id='task_four',  # Define the task ID
-        depends_on_past=False,  # Do not depend on past runs
-        python_callable=clean  # Call the clean function
+        task_id='task_four',
+        depends_on_past=False,
+        python_callable=clean # Call the clean function
     )
 
     t5 = PythonOperator(
-        task_id='task_five',  # Define the task ID
-        depends_on_past=False,  # Do not depend on past runs
-        python_callable=count_words  # Call the count_words function
+        task_id='task_five',
+        depends_on_past=False,
+        python_callable=count_words # Call count_words function
     )
 
-    # Define the task
+    t0 >> t1 >> t2 >> t3 >> t4 >> t5
+
