@@ -9,6 +9,9 @@ import requests  # Import the requests library for making HTTP requests
 import time  # Import the time library for adding delays
 from collections import Counter  # Import the Counter class for counting elements
 
+# Function: Catalog
+# This function reads a list of URLs from a file, fetches the HTML content of each URL, and saves it to individual files in the specified directory.
+
 def catalog():
     # Define pull(url) helper function
     def pull(url):
@@ -55,8 +58,9 @@ def catalog():
         # Wait for 15 seconds before processing the next URL
         time.sleep(15)
 
-# Function: Catalog
-# This function reads a list of URLs from a file, fetches the HTML content of each URL, and saves it to individual files in the specified directory.
+
+# Function: Combine
+# This function reads all .html files in the specified directory, combines their content into a single file, and saves it as combo.txt.
 
 def combine():
     # Open the output file in write mode
@@ -73,8 +77,9 @@ def combine():
 
     print('Combined all .html files into combo.txt')
 
-# Function: Combine
-# This function reads all .html files in the specified directory, combines their content into a single file, and saves it as combo.txt.
+
+# Function: Titles
+# This function reads the combined HTML file, extracts the text from all <h3> elements, and saves the extracted titles into a JSON file.
 
 def titles():
     # Define the store_json helper function
@@ -108,8 +113,9 @@ def titles():
     # Store the results in a JSON file
     store_json(titles, 'titles.json')
 
-# Function: Titles
-# This function reads the combined HTML file, extracts the text from all <h3> elements, and saves the extracted titles into a JSON file.
+
+# Function: Clean
+# This function reads the titles from the JSON file, removes punctuation and numbers, filters out one-character words, and saves the cleaned titles into a new JSON file.
 
 def clean():
     # Define the store_json helper function
@@ -148,8 +154,8 @@ def clean():
         # Store the cleaned titles in a new JSON file
         store_json(titles, 'titles_clean.json')
 
-# Function: Clean
-# This function reads the titles from the JSON file, removes punctuation and numbers, filters out one-character words, and saves the cleaned titles into a new JSON file.
+# Function: Count Words
+# This function reads the cleaned titles from the JSON file, counts the frequency of each word, and saves the word counts into a new JSON file.
 
 def count_words():
     # Define the store_json helper function
@@ -174,8 +180,7 @@ def count_words():
         # Store the word counts in a JSON file
         store_json(counts, 'words.json')
 
-# Function: Count Words
-# This function reads the cleaned titles from the JSON file, counts the frequency of each word, and saves the word counts into a new JSON file.
+
 
 # Define the DAG and tasks
 with DAG(
